@@ -1,0 +1,22 @@
+name: CI
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout source
+    - uses: actions/checkout@v1
+    - name: Docker build
+      run: |
+        docker login -u liwei2633 -p ${{ secrets.DOCKER_HUB_PWD }}
+        cd ./docker/base
+        docker build -t liwei2633/xgo .
+        docker push liwei2633/xgo
+        
