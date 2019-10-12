@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - master
+    paths:
+      - 'docker/base/*'
 
 jobs:
   build:
@@ -15,6 +17,17 @@ jobs:
       - name: Docker build
         run: |
           docker login -u liwei2633 -p ${{ secrets.DOCKER_HUB_PWD }}
-          cd ./docker/base
-          docker build -t liwei2633/xgo .
-          docker push liwei2633/xgo
+          docker build -t liwei2633/xgo:base ./docker/base
+          docker push liwei2633/xgo:base
+          docker build -t liwei2633/xgo:go-1.12.10 ./docker/go-1.12.10
+          docker push liwei2633/xgo:go-1.12.10
+          docker build -t liwei2633/xgo:go-1.12.x ./docker/go-1.12.x
+          docker push liwei2633/xgo:go-1.12.x
+          docker build -t liwei2633/xgo:go-1.13.1 ./docker/go-1.13.1
+          docker push liwei2633/xgo:go-1.13.1
+          docker build -t liwei2633/xgo:go-1.13.x ./docker/go-1.13.x
+          docker push liwei2633/xgo:go-1.13.x
+          docker build -t liwei2633/xgo:go-develop ./docker/go-develop
+          docker push liwei2633/xgo:go-develop
+          docker build -t liwei2633/xgo:go-latest ./docker/go-latest
+          docker push liwei2633/xgo:go-latest

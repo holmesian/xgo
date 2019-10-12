@@ -3,9 +3,7 @@
 #
 # Released under the MIT license.
 
-FROM techknowlogick/xgo:base
-
-MAINTAINER Péter Szilágyi <peterke@gmail.com>
+FROM liwei2633/xgo:base
 
 # Clone and bootstrap the latest Go develop branch
 RUN $BOOTSTRAP_REPO master

@@ -1,4 +1,4 @@
-FROM techknowlogick/xgo:base
+FROM liwei2633/xgo:base
 
 # Configure the root Go distribution and bootstrap based on it
 ENV GO_VERSION 11210
