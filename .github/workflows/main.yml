@@ -17,7 +17,7 @@ jobs:
       - name: Docker build
         run: |
           docker login -u liwei2633 -p ${{ secrets.DOCKER_HUB_PWD }}
-          docker build -t liwei2633/xgo:base ./docker/base
+          docker build --cache-from=liwei2633/xgo:latest -t liwei2633/xgo:base ./docker/base
           docker push liwei2633/xgo:base
           docker build -t liwei2633/xgo:go-1.12.10 ./docker/go-1.12.10
           docker push liwei2633/xgo:go-1.12.10
