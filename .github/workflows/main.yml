@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'docker/base/*'
+      - "docker/base/*"
 
 jobs:
   build:
@@ -14,11 +14,14 @@ jobs:
     steps:
       - name: Checkout source
         uses: actions/checkout@v1
-      - name: Docker build
+      - name: Docker login
+        run: docker login -u liwei2633 -p ${{ secrets.DOCKER_HUB_PWD }}
+      - name: Docker build base
         run: |
-          docker login -u liwei2633 -p ${{ secrets.DOCKER_HUB_PWD }}
           docker build --cache-from=liwei2633/xgo:latest -t liwei2633/xgo:base ./docker/base
           docker push liwei2633/xgo:base
+      - name: Docker build other
+        run: |
           docker build -t liwei2633/xgo:go-1.12.10 ./docker/go-1.12.10
           docker push liwei2633/xgo:go-1.12.10
           docker build -t liwei2633/xgo:go-1.12.x ./docker/go-1.12.x
