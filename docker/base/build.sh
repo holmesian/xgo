@@ -154,7 +154,7 @@ if [[ "$USEMODULES" = true ]]; then
   NAME=`sed -n 's/module\ \(.*\)/\1/p' /source/go.mod`
 fi
 
-# test
+# test1
 PACK_RELPATH="./$PACK"
 
 if [ "$OUT" != "" ]; then
