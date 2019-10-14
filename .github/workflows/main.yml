@@ -18,7 +18,8 @@ jobs:
         run: docker login -u liwei2633 -p ${{ secrets.DOCKER_HUB_PWD }}
       - name: Docker build base
         run: |
-          docker build --cache-from=liwei2633/xgo:latest -t liwei2633/xgo:base ./docker/base
+          docker pull liwei2633/xgo:base
+          docker build --cache-from=liwei2633/xgo:base -t liwei2633/xgo:base ./docker/base
           docker push liwei2633/xgo:base
       - name: Docker build other
         run: |
@@ -30,7 +31,3 @@ jobs:
           docker push liwei2633/xgo:go-1.13.1
           docker build -t liwei2633/xgo:go-1.13.x ./docker/go-1.13.x
           docker push liwei2633/xgo:go-1.13.x
-          docker build -t liwei2633/xgo:go-develop ./docker/go-develop
-          docker push liwei2633/xgo:go-develop
-          docker build -t liwei2633/xgo:go-latest ./docker/go-latest
-          docker push liwei2633/xgo:go-latest
