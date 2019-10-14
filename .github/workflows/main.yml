@@ -19,7 +19,7 @@ jobs:
       - name: Docker build base
         run: |
           docker pull liwei2633/xgo:base
-          docker build -t liwei2633/xgo:base ./docker/base
+          docker build --cache-from=liwei2633/xgo:base -t liwei2633/xgo:base ./docker/base
           docker push liwei2633/xgo:base
       - name: Docker build other
         run: |
