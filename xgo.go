@@ -40,7 +40,7 @@ func init() {
 
 // Cross compilation docker containers
 var dockerBase = "liwei2633/xgo:base"
-var dockerDist = "liwei2633/xgo:"
+var dockerDist = "liwei2633/xgo:go-"
 
 // Command line arguments to fine tune the compilation
 var (
