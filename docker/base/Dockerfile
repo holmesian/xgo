@@ -5,7 +5,8 @@
 
 FROM ubuntu:18.04
 
-LABEL MAINTAINER="MonkeyWie liwei2633@163.com"
+LABEL MAINTAINER="Holmesian i@holmesian.org"
+
 
 # Mark the image as xgo enabled to support xgo-in-xgo
 ENV XGO_IN_XGO 1
@@ -91,5 +92,10 @@ RUN chmod +x $BUILD_DEPS
 ADD build.sh /build.sh
 ENV BUILD /build.sh
 RUN chmod +x $BUILD
+
+ENV GO111MODULE=on \
+    GOPROXY=https://goproxy.cn,direct \
+    PATH=/usr/local/go/bin:$PATH \
+    GOPATH=/go
 
 ENTRYPOINT ["/build.sh"]

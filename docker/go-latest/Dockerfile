@@ -3,4 +3,4 @@
 #
 # Released under the MIT license.
 
-FROM liwei2633/xgo:go-1.13.x
+FROM holmesian/xgo:go-1.13.x

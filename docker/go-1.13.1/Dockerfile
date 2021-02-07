@@ -1,4 +1,4 @@
-FROM liwei2633/xgo:base
+FROM holmesian/xgo:base
 
 # Configure the root Go distribution and bootstrap based on it
 ENV GO_VERSION 1131
