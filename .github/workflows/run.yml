@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - "docker/base/*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v1
+      - name: Docker login
+        run: docker login -u holmesian -p ${{ secrets.DOCKER_HUB_PWD }}
+      - name: Docker build base
+        run: |
+          docker pull holmesian/xgo:base
+          docker build --cache-from=holmesian/xgo:base -t holmesian/xgo:base ./docker/base
+          docker push holmesian/xgo:base
+      - name: Docker build other
+        run: |
+          docker build -t holmesian/xgo:go-1.12.10 ./docker/go-1.12.10
+          docker push holmesian/xgo:go-1.12.10
+          docker build -t holmesian/xgo:go-1.12.x ./docker/go-1.12.x
+          docker push holmesian/xgo:go-1.12.x
+          docker build -t holmesian/xgo:go-1.13.1 ./docker/go-1.13.1
+          docker push holmesian/xgo:go-1.13.1
+          docker build -t holmesian/xgo:go-1.13.x ./docker/go-1.13.x
+          docker push holmesian/xgo:go-1.13.x
+          docker build -t holmesian/xgo:go-latest ./docker/go-latest
+          docker push holmesian/xgo:go-latest
