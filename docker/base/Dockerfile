@@ -93,9 +93,6 @@ ADD build.sh /build.sh
 ENV BUILD /build.sh
 RUN chmod +x $BUILD
 
-ENV GO111MODULE=on \
-    GOPROXY=https://goproxy.cn,direct \
-    PATH=/usr/local/go/bin:$PATH \
-    GOPATH=/go
+ENV GOPROXY=https://goproxy.cn,direct 
 
 ENTRYPOINT ["/build.sh"]
