@@ -18,6 +18,7 @@ import (
 	"os/exec"
 	"os/user"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 )
@@ -222,7 +223,23 @@ func checkDockerImage(image string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
+	return compareOutAndImage(out, image)
+}
+
+// compare output of docker images and image name
+func compareOutAndImage(out []byte, image string) (bool, error) {
+
+	if strings.Contains(image, ":") {
+		// get repository and tag
+		res := strings.SplitN(image, ":", 2)
+		r, t := res[0], res[1]
+		match, _ := regexp.Match(fmt.Sprintf(`%s\s+%s`, r, t), out)
+		return match, nil
+	}
+
+	// default find repository without tag
 	return bytes.Contains(out, []byte(image)), nil
+
 }
 
 // Pulls an image from the docker registry.
@@ -293,10 +310,16 @@ func compile(image string, config *ConfigFlags, flags *BuildFlags, folder string
 	// Assemble and run the cross compilation command
 	fmt.Printf("Cross compiling %s...\n", config.Repository)
 
+	// Alter paths so they work for Windows
+	// Does not affect Linux paths
+	re := regexp.MustCompile("([A-Z]):")
+	folder_w := filepath.ToSlash(re.ReplaceAllString(folder, "/$1"))
+	depsCache_w := filepath.ToSlash(re.ReplaceAllString(depsCache, "/$1"))
+
 	args := []string{
 		"run", "--rm",
-		"-v", folder + ":/build",
-		"-v", depsCache + ":/deps-cache:ro",
+		"-v", folder_w + ":/build",
+		"-v", depsCache_w + ":/deps-cache:ro",
 		"-e", "REPO_REMOTE=" + config.Remote,
 		"-e", "REPO_BRANCH=" + config.Branch,
 		"-e", "PACK=" + config.Package,
@@ -311,6 +334,7 @@ func compile(image string, config *ConfigFlags, flags *BuildFlags, folder string
 		"-e", fmt.Sprintf("FLAG_BUILDMODE=%s", flags.Mode),
 		"-e", fmt.Sprintf("FLAG_TRIMPATH=%v", flags.Trimpath),
 		"-e", "TARGETS=" + strings.Replace(strings.Join(config.Targets, " "), "*", ".", -1),
+		"-e", fmt.Sprintf("GOPROXY=%s", os.Getenv("GOPROXY")),
 	}
 	if usesModules {
 		args = append(args, []string{"-e", "GO111MODULE=on"}...)

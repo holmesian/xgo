@@ -3,4 +3,5 @@
 #
 # Released under the MIT license.
 
-FROM holmesian/xgo:go-1.13.x
+## GENERATED. DO NOT EDIT DIRECTLY.
+FROM holmesian/xgo:go-1.15.x
