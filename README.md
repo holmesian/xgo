@@ -1,5 +1,7 @@
 # xgo - Go CGO cross compiler
 
+![CI](https://github.com/holmesian/xgo/workflows/CI/badge.svg?branch=master)
+
 Although Go strives to be a cross platform language, cross compilation from one
 platform to another is not as simple as it could be, as you need the Go sources
 bootstrapped to each platform and architecture.
