@@ -3,9 +3,12 @@ name: CI
 on:
   push:
     branches:
-      - master
+    - master
+    - main
     paths:
-      - "docker/base/*"
+      - "docker/*"
+      - ".github/workflows/main.yml"
+
 
 jobs:
   build:

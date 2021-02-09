@@ -1,5 +1,10 @@
 # xgo - Go CGO cross compiler
 
+![CI](https://github.com/holmesian/xgo/workflows/CI/badge.svg?branch=master)
+
+中国大陆加速版本，通过在镜像中设置GOPROXY达到解决大陆网络故障问题的效果。
+
+
 Although Go strives to be a cross platform language, cross compilation from one
 platform to another is not as simple as it could be, as you need the Go sources
 bootstrapped to each platform and architecture.
@@ -38,7 +43,7 @@ a single command to compile a Go package to various platforms and architectures.
 Although you could build the container manually, it is available as an automatic
 trusted build from Docker's container registry (not insignificant in size):
 
-    docker pull holmesian/xgo:go-latest
+    docker pull holmesian/xgo:latest
 
 To prevent having to remember a potentially complex Docker command every time,
 a lightweight Go wrapper was written on top of it.

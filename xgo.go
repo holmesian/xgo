@@ -4,7 +4,7 @@
 // Released under the MIT license.
 
 // Wrapper around the GCO cross compiler docker container.
-package main 
+package main
 
 import (
 	"bytes"
@@ -41,7 +41,7 @@ func init() {
 
 // Cross compilation docker containers
 var dockerBase = "holmesian/xgo:base"
-var dockerDist = "holmesian/xgo:go-"
+var dockerDist = "holmesian/xgo:"
 
 // Command line arguments to fine tune the compilation
 var (
@@ -219,7 +219,7 @@ func checkDocker() error {
 // Checks whether a required docker image is available locally.
 func checkDockerImage(image string) (bool, error) {
 	fmt.Printf("Checking for required docker image %s... ", image)
-	out, err := exec.Command("docker", "images", "--format", "{{.Repository}}:{{.Tag}}").Output()
+	out, err := exec.Command("docker", "images", "--no-trunc").Output()
 	if err != nil {
 		return false, err
 	}

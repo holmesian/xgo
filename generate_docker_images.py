@@ -28,6 +28,8 @@ def generate_image(image):
   f.write("RUN \\\n")
   f.write("  export ROOT_DIST=https://dl.google.com/go/"+image["filename"]+" && \\\n")
   f.write("  export ROOT_DIST_SHA="+image["sha256"]+" && \\\n")
+  f.write("# add to fit Chinese networks  \\\n")
+  f.write("ENV GOPROXY=https://goproxy.cn,direct \n")
   f.write("  \\\n")
   f.write("$BOOTSTRAP_PURE\n")
   f.close()
@@ -35,6 +37,8 @@ def generate_image(image):
   f = open("docker/"+wildcard+"/Dockerfile", "w")
   f.write("## GENERATED. DO NOT EDIT DIRECTLY.\n")
   f.write("FROM holmesian/xgo:"+version+"\n")
+  f.write("# add to fit Chinese networks  \n")
+  f.write("ENV GOPROXY=https://goproxy.cn,direct   \n")
   f.close()
 
 r = requests.get('https://golang.org/dl/?mode=json')
@@ -79,6 +83,8 @@ except:
 f = open("docker/go-latest/Dockerfile", "w")
 f.write("## GENERATED. DO NOT EDIT DIRECTLY.\n")
 f.write("FROM holmesian/xgo:"+wildcard.replace("go1", "go-1")+"\n")
+f.write("# add to fit Chinese networks  \n")
+f.write("ENV GOPROXY=https://goproxy.cn,direct  \n")
 f.close()
 
 hs = hashlib.sha256(r.text.encode('utf-8')).hexdigest()
