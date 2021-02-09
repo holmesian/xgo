@@ -16,20 +16,53 @@ jobs:
         uses: actions/checkout@v1
       - name: Docker login
         run: docker login -u holmesian -p ${{ secrets.DOCKER_HUB_PWD }}
-      - name: Docker build base
+
+      - name: get golang version 1
+        run: |
+          export VERSION=$(cat .golang_version | awk -F',' '{print $1}' | sed 's/go1/go-1/')
+          echo ::set-output name=value::$VERSION
+          DOTS=$(echo -n $VERSION | awk -F"." '{print NF-1}')
+          if [ "$DOTS" == "1" ]; then
+            echo ::set-output name=wildcard::$VERSION.x
+          else
+            echo ::set-output name=wildcard::$(echo -n $VERSION | sed 's/\.[^.]*$/.x/')
+          fi
+        id: golang_version_1
+      - name: get golang version 2
+        run: |
+          export VERSION=$(cat .golang_version | awk -F',' '{print $2}' | sed 's/go1/go-1/')
+          echo ::set-output name=value::$VERSION
+          DOTS=$(echo -n $VERSION | awk -F"." '{print NF-1}')
+          if [ "$DOTS" == "1" ]; then
+            echo ::set-output name=wildcard::$VERSION.x
+          else
+            echo ::set-output name=wildcard::$(echo -n $VERSION | sed 's/\.[^.]*$/.x/')
+          fi
+        id: golang_version_2
+
+      - name: build Docker base
         run: |
           docker pull holmesian/xgo:base
           docker build --cache-from=holmesian/xgo:base -t holmesian/xgo:base ./docker/base
           docker push holmesian/xgo:base
-      - name: Docker build other
-        run: |
-          docker build -t holmesian/xgo:go-1.12.10 ./docker/go-1.12.10
-          docker push holmesian/xgo:go-1.12.10
-          docker build -t holmesian/xgo:go-1.12.x ./docker/go-1.12.x
-          docker push holmesian/xgo:go-1.12.x
-          docker build -t holmesian/xgo:go-1.13.1 ./docker/go-1.13.1
-          docker push holmesian/xgo:go-1.13.1
-          docker build -t holmesian/xgo:go-1.13.x ./docker/go-1.13.x
-          docker push holmesian/xgo:go-1.13.x
-          docker build -t holmesian/xgo:go-latest ./docker/go-latest
-          docker push holmesian/xgo:go-latest
+      - name: build golang ${{ steps.golang_version_1.outputs.value }} image
+        uses: docker/build-push-action@v2
+        with:
+          context: docker/${{ steps.golang_version_1.outputs.value }}/
+          tags: holmesian/xgo:${{ steps.golang_version_1.outputs.value }},holmesian/xgo:${{ steps.golang_version_1.outputs.wildcard }}
+          push: true
+          file: docker/${{ steps.golang_version_1.outputs.value }}/Dockerfile
+      - name: build golang ${{ steps.golang_version_2.outputs.value }} image
+        uses: docker/build-push-action@v2
+        with:
+          context: docker/${{ steps.golang_version_2.outputs.value }}/
+          tags: holmesian/xgo:${{ steps.golang_version_2.outputs.value }},holmesian/xgo:${{ steps.golang_version_2.outputs.wildcard }}
+          push: true
+          file: docker/${{ steps.golang_version_2.outputs.value }}/Dockerfile
+      - name: build latest image
+        uses: docker/build-push-action@v2
+        with:
+          context: docker/go-latest/
+          tags: holmesian/xgo:latest
+          push: true
+          file: docker/go-latest/Dockerfile
