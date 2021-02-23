@@ -1,2 +1,0 @@
-## GENERATED. DO NOT EDIT DIRECTLY.
-FROM holmesian/xgo:go-1.14.15

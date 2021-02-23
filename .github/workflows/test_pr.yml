@@ -12,22 +12,24 @@ jobs:
       - name: get golang version 1
         run: |
           export VERSION=$(cat .golang_version | awk -F',' '{print $1}' | sed 's/go1/go-1/')
-          echo ::set-output name=value::$VERSION
           DOTS=$(echo -n $VERSION | awk -F"." '{print NF-1}')
           if [ "$DOTS" == "1" ]; then
+            echo ::set-output name=value::$VERSION.0
             echo ::set-output name=wildcard::$VERSION.x
           else
+            echo ::set-output name=value::$VERSION
             echo ::set-output name=wildcard::$(echo -n $VERSION | sed 's/\.[^.]*$/.x/')
           fi
         id: golang_version_1
       - name: get golang version 2
         run: |
           export VERSION=$(cat .golang_version | awk -F',' '{print $2}' | sed 's/go1/go-1/')
-          echo ::set-output name=value::$VERSION
           DOTS=$(echo -n $VERSION | awk -F"." '{print NF-1}')
           if [ "$DOTS" == "1" ]; then
+            echo ::set-output name=value::$VERSION.0
             echo ::set-output name=wildcard::$VERSION.x
           else
+            echo ::set-output name=value::$VERSION
             echo ::set-output name=wildcard::$(echo -n $VERSION | sed 's/\.[^.]*$/.x/')
           fi
         id: golang_version_2
@@ -41,8 +43,8 @@ jobs:
         uses: docker/setup-buildx-action@v1
       - name: build base image
         uses: docker/build-push-action@v2
-        # if: steps.base_build.outputs.value == '0'
-        if: true
+        # if: steps.base_build.outputs.value != '0'
+        if: false
         with:
           context: docker/base/
           tags: techknowlogick/xgo:base
