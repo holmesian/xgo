@@ -59,17 +59,29 @@ ADD patches /patches
 ##########################
 
 # Configure the container for OSX cross compilation
-ENV OSX_SDK MacOSX11.1.sdk
-ENV OSX_SDK_PATH https://faasd-test.spacebear.ee/$OSX_SDK.tar.xz
+#ENV OSX_SDK MacOSX11.1.sdk
+#ENV OSX_SDK_PATH https://faasd-test.spacebear.ee/$OSX_SDK.tar.xz
+
+# Configure the container for OSX cross compilation OLD
+ENV OSX_SDK MacOSX10.11.sdk
+ENV OSX_SDK_PATH https://s3.dockerproject.org/darwin/v2/$OSX_SDK.tar.xz
+
 
 # Make libxar known to the ld64 and cctools build
 ENV LD_LIBRARY_PATH=/osxcross/target/lib
 
 # Download the osx sdk and build the osx toolchain
 # We download the osx sdk, patch it and pack it again to be able to throw the patched version at osxcross
+#RUN \
+#  $FETCH $OSX_SDK_PATH e8f0382f9e54ab3d7211b4886216475201ee750e47fa76dc6a0bf4604a63ddfc && \
+#  tar -xf `basename $OSX_SDK_PATH` && rm -f `basename $OSX_SDK_PATH`
+
+#Put  osx sdk back to 10.11
 RUN \
-  $FETCH $OSX_SDK_PATH e8f0382f9e54ab3d7211b4886216475201ee750e47fa76dc6a0bf4604a63ddfc && \
+  $FETCH $OSX_SDK_PATH dd228a335194e3392f1904ce49aff1b1da26ca62 && \
   tar -xf `basename $OSX_SDK_PATH` && rm -f `basename $OSX_SDK_PATH`
+
+
 ADD patch.tar.xz $OSX_SDK/usr/include/c++
 RUN tar -cf - $OSX_SDK/ | xz -c - > $OSX_SDK.tar.xz && rm -rf $OSX_SDK
 

@@ -7,6 +7,8 @@ on:
     - main
     paths:
       - "docker/*"
+      - "docker/base/*"
+      - "docker/go-latest/*"
       - ".github/workflows/main.yml"
 
 
